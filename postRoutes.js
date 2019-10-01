@@ -154,9 +154,46 @@ postRouter.get('/:id/comments', (req, res) => {
 });*/
 
 //same as /api/posts/:id
-/*postRouter.put('/:id', (req, res) => {
+postRouter.put('/:id', (req, res) => {
 
-});*/
+    const postId = req.params.id;
+    const newInformation = req.body;
+
+    if(newInformation.title === "" && newInformation.contents === "")
+    {
+        res.status(400).json( {errorMessage: 'Please provide title and contents for the post.'} );
+    }
+    else {
+
+        DB.update(postId, newInformation)
+        .then(updateCount => {
+
+            if(updateCount == 1){
+                DB.findById(postId)
+                .then(post => {
+                    res.status(200).json(post); 
+
+                })
+                .catch(error => {
+                    res.status(404).json( {message: 'Could not find the post after updating.'} );
+                })              
+            }
+            else {
+
+                res.status(404).json( {message: 'The post with the specified ID does not exist.'} );
+
+            }
+        })
+        .catch(error => {
+
+            res.status(500).json( {error: 'The post information could not be modified.'} )
+        })
+
+    }
+    
+
+
+});
 
 //same as /api/posts/:id
 postRouter.delete('/:id', (req, res) => {
