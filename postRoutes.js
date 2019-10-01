@@ -8,25 +8,73 @@ const postRouter = express.Router();
 const DB = require('./data/db.js');
 
 
-//**********************************END POINTS */
+//**********************************END POINTS ******************************/
 
 //any url that begins with /api/posts
 postRouter.get('/', (req, res) => {
+
+    DB.find()
+    .then( posts => {
+        
+        res.status(200).json(posts);
+
+    })
+    .catch( error => {
+
+        res.status(500).json( {error: 'The posts information could not be retrieved.'} )
+    })
 
 });
 
 //same as /api/posts/:id
 postRouter.get('/:id', (req, res) => {
 
+    const postId = req.params.id;
+    
+    DB.findById(postId)
+    .then(post => {
+
+        if(!post){
+            res.status(404).json( {message: 'The post with the specified ID does not exist'} );
+        }
+        else {
+            res.status(200).json(post);
+        }
+    })
+    .catch(error => {
+
+        res.status(500).json( {message: 'The post information could not be retrieved.'} );
+    })
+
 });
 
 //same as /api/posts/:id/comments
 postRouter.get('/:id/comments', (req, res) => {
 
+    const commentId = req.params.id;
+
+    DB.findCommentById(commentId)
+    .then(comment => {
+
+        if(!comment){
+
+            res.status(404).json( {message: 'The post with the specified ID does not exist.'});
+
+        }
+        else {
+
+            res.status(200).json(comment);
+        }
+    })
+    .catch(error => {
+
+        res.status(500).json( {error: 'The comments information could not be retrieved.'} )
+    })
+
 });
 
 //same as /api/posts
-postRouter.post ('/', (req, res) => {
+/*postRouter.post ('/', (req, res) => {
 
     const postInformation = req.body;
 
@@ -44,7 +92,10 @@ postRouter.post ('/', (req, res) => {
                 console.log("insert post", post);
                 res.status(201).json(post);
 
-            })          
+            }) 
+            .catch(error => {
+                res.status(500).json( {error: 'There was an error while saving the post to the database.'} );
+            })         
             
         })
         .catch(error => {
@@ -52,10 +103,10 @@ postRouter.post ('/', (req, res) => {
         })
     }
 
-});
+});*/
 
 //same as /api/posts/:id/comments
-postRouter.post('/:id/comments', (req, res) => {
+/*postRouter.post('/:id/comments', (req, res) => {
 
     const commentId = req.params.id;
     const commentInformation = req.body;
@@ -82,27 +133,35 @@ postRouter.post('/:id/comments', (req, res) => {
                         res.status(201).json(comment);
                     })  
                     .catch(error => {
-                        res.status(500).json( {message: 'There was an error while saving the comment to the database.'})
+                        res.status(500).json( {error: 'There was an error while saving the comment to the database.'})
                     })                 
 
                 })
+                .catch(error => {
+                    res.status(500).json( {error: 'There was an error while saving the comment to the database.'})
+                })                 
+
                 
             }
         })
+        .catch(error => {
+            res.status(500).json( {error: 'There was an error while saving the comment to the database.'})
+        })                 
+
 
     }
 
-});
+});*/
 
 //same as /api/posts/:id
-postRouter.put('/:id', (req, res) => {
+/*postRouter.put('/:id', (req, res) => {
 
-});
+});*/
 
 //same as /api/posts/:id
-postRouter.delete('/:id', (req, res) => {
+/*postRouter.delete('/:id', (req, res) => {
 
-})
+});*/
 
 //exports the router so it is available to the main server file
 module.exports = postRouter;
