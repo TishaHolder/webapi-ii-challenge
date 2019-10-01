@@ -159,9 +159,25 @@ postRouter.get('/:id/comments', (req, res) => {
 });*/
 
 //same as /api/posts/:id
-/*postRouter.delete('/:id', (req, res) => {
+postRouter.delete('/:id', (req, res) => {
 
-});*/
+    const postId = req.params.id;
+
+    DB.remove(postId)
+    .then (numDeletedRecords => {
+        if(numbDeletedRecords < 1){
+            res.status(404).json( {message: 'The post with the specified ID does not exist.'})
+        }
+        else {
+            res.status(200).json( {message: 'The post was successfully deleted.'} );
+        }
+    })
+    .catch (error => {
+        
+        res.status(500).json( {error: 'The post could not be removed.'} );
+    })
+
+});
 
 //exports the router so it is available to the main server file
 module.exports = postRouter;
