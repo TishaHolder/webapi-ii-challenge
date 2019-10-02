@@ -8,6 +8,8 @@
     "server": "nodemon index.js"
   },
   "dependencies": {
+    "db.sqlite3": "^1.0.8",
+    "express": "^4.17.1",
     "knex": "^0.19.4",
     "sqlite3": "^4.1.0"
   },
